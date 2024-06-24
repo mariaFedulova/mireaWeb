@@ -1,29 +1,6 @@
-<?php
+<?
     include 'session.php';
     include 'db.php';
-    if(!isset($_SESSION['userid'])){
-        header('location:login.php');
-        exit;
-    }
-
-    $query = "SELECT * FROM tasks WHERE user_id = {$_SESSION['userid']}";
-    $result = mysqli_query($db, $query);
-    while($array = mysqli_fetch_array($result)){
-        $ev[] = $array['date'];
-    }
-    $query = "SELECT * FROM notes WHERE user_id = {$_SESSION['userid']}";
-    $result = mysqli_query($db, $query);
-    while($array = mysqli_fetch_array($result)){
-        if ($array['text'] != ''){
-            $ev[] = $array['day'];
-        }
-    }
-    $query = "SELECT * FROM moments WHERE user_id = {$_SESSION['userid']}";
-    $result = mysqli_query($db, $query);
-    while($array = mysqli_fetch_array($result)){
-        $ev[] = $array['day'];
-    }
-    $unique = array_unique($ev);
 ?>
 
 <!DOCTYPE html>
@@ -57,68 +34,29 @@
         <hr class="header-hr">
     </header>
     <main>
-        <h1 class="calendar-heading">Декабрь 2023</h1>
-        <div class="calendar container">
-            <?php
-                $days = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
-                echo "<div class='row days'>
-                        <div class='col radius-ltop'>ПН</div>";
-                for($i = 1; $i<6; $i++){
-                    echo "<div class='col'>{$days[$i]}</div>";
-                }                       
-                echo "<div class='col radius-rtop'>ВС</div>
-                        </div>
-                <div class='row'>";
-                $day = 1;
-                for($i = 1; $i<8; $i++){
-                    if($i <5 ){
-                        echo"<div class='col'> </div>";
-                    }
-                    else{   
-                        $str = "2023-12-0".$day;
-                        if(in_array($str, $unique))
-                            echo"<div class='col '><a class='cal_link backlight' href='index.php?day=2023-12-$day'>$day</a></div>";
-                        else
-                            echo"<div class='col'><a class='cal_link' href='index.php?day=2023-12-$day'>$day</a></div>";
-                        $day++;
-                    }
-                }
-                echo "</div>";
-                for($i = 0; $i<4; $i++){
-                    echo"<div class='row'>";
-                    for($j = 0; $j<7; $j++){
-                        if($day == 25){
-                            $str = "2023-12-".$day;
-                            if(in_array($str, $unique))
-                                echo"<div class='col radius-lbottom '><a class='cal_link backlight' href='index.php?day=2023-12-$day'>$day</a></div>";
-                            else
-                                echo"<div class='col radius-lbottom '><a class='cal_link' href='index.php?day=2023-12-$day'>$day</a></div>";
-                            $day++;
-                        }                          
-                        elseif($day == 31){
-                            $str = "2023-12-".$day;
-                            if(in_array($str, $unique))
-                                echo "<div class='col radius-rbottom '><a class='cal_link backlight' href='index.php?day=2023-12-$day'>$day</a></div>";
-                            else
-                                echo "<div class='col radius-rbottom'><a class='cal_link' href='index.php?day=2023-12-$day'>$day</a></div>";
-                            $day++;
-                        }                           
-                        else{
-                            if($day < 10)
-                                $str = "2023-12-0".$day;
-                            else
-                                $str = "2023-12-".$day;
-                            if(in_array($str, $unique))
-                                echo"<div class='col ' ><a class='cal_link backlight' href='index.php?day=2023-12-$day'>$day</a></div>";
-                            else
-                                echo"<div class='col'><a class='cal_link' href='index.php?day=2023-12-$day'>$day</a></div>";
-                            $day++;
-                        }                           
-                    }   
-                    echo"</div>";
-                }
-            ?>
+        <div class="calendar">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>Пн</td><td>Вт</td><td>Ср</td><td>Чт</td><td>Пт</td><td>Сб</td><td>Вс</td>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody">
+                    <tr class="tr"></tr>
+                    <tr class="tr"></tr>
+                    <tr class="tr"></tr>
+                    <tr class="tr"></tr>
+                    <tr class="tr"></tr>
+                </tbody>
+            </table>
+            <div class="calendar__controls">
+                <button id="prevMonth">&lt;</button>
+                <span id="monthYear"></span>
+                <button id="nextMonth">&gt;</button>
+            </div>
         </div>
     </main>
+    <script src="js/jq.js"></script>
+    <script src="js/calendar.js"></script>
 </body>
 </html>
